@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.sebasbotero.supportflow.service.TicketServiceTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.591 s -- in com.sebasbotero.supportflow.service.TicketServiceTest
