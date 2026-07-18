@@ -51,9 +51,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidacion(MethodArgumentNotValidException ex) {
         Map<String, String> errores = new LinkedHashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errores.put(error.getField(), error.getDefaultMessage())
-        );
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errores.put(error.getField(), error.getDefaultMessage()));
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
@@ -67,6 +66,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGenerico(Exception ex) {
         log.error("Error no controlado: ", ex);
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error inesperado.");
+    }
+
+    @ExceptionHandler(PasswordActualIncorrectaException.class)
+    public ResponseEntity<ErrorResponse> handlePasswordIncorrecta(PasswordActualIncorrectaException ex) {
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     private ResponseEntity<ErrorResponse> build(HttpStatus status, String mensaje) {
