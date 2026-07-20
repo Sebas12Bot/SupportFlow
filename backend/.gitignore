@@ -1,3 +1,8 @@
+# Frontend / Node
+node_modules
+dist
+.env
+
 ### Maven / Build ###
 target/
 .mvn/wrapper/maven-wrapper.jar
