@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Inbox, Ticket as TicketIcon, CheckCircle2, Clock3, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { isAxiosError } from "axios";
 import Navbar from "../components/layout/Navbar";
 import Button from "../components/ui/Button";
 import ErrorState from "../components/ui/ErrorState";
@@ -29,9 +30,13 @@ const DashboardUsuarioPage = () => {
         try {
             const todos = await ticketsApi.listarTickets();
             setTickets(todos.filter((t) => t.usuarioReporta.id === usuario?.id));
-        } catch {
-            setError(true);
-            toast.error("No se pudieron cargar tus tickets");
+        } catch (err) {
+            if (isAxiosError(err) && err.response?.status === 401) {
+                // No mostrar ErrorState: el interceptor global maneja la sesión expirada
+            } else {
+                setError(true);
+                toast.error("No se pudieron cargar tus tickets");
+            }
         } finally {
             setCargando(false);
         }
@@ -43,7 +48,6 @@ const DashboardUsuarioPage = () => {
         };
         fetchData();
     }, [usuario?.id]);
-
 
     const metricas = calcularMetricas(tickets);
 

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {Inbox, Ticket as TicketIcon, CheckCircle2, Clock3, UserCheck } from "lucide-react";
+import { Inbox, Ticket as TicketIcon, CheckCircle2, Clock3, UserCheck } from "lucide-react";
 import { toast } from "react-toastify";
+import { isAxiosError } from "axios";
 import Navbar from "../components/layout/Navbar";
 import ErrorState from "../components/ui/ErrorState";
 import MetricCard from "../components/dashboard/MetricCard";
@@ -31,9 +32,13 @@ const DashboardAgentePage = () => {
             ]);
             setSinAsignar(sinAsignarData);
             setMisAsignados(todos.filter((t) => t.usuarioAsignado?.id === usuario?.id));
-        } catch {
-            setError(true);
-            toast.error("No se pudieron cargar los tickets");
+        } catch (err) {
+            if (isAxiosError(err) && err.response?.status === 401) {
+                // No mostrar ErrorState: el interceptor maneja la sesión expirada
+            } else {
+                setError(true);
+                toast.error("No se pudieron cargar los tickets");
+            }
         } finally {
             setCargando(false);
         }
@@ -45,7 +50,6 @@ const DashboardAgentePage = () => {
         };
         fetchData();
     }, [usuario?.id]);
-
 
     const metricas = calcularMetricas([...sinAsignar, ...misAsignados]);
 
@@ -69,7 +73,6 @@ const DashboardAgentePage = () => {
                     <ErrorState tipo="red" onReintentar={cargarDatos} />
                 ) : (
                     <>
-                        {/* Métricas */}
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                             <MetricCard label="Sin asignar" valor={String(sinAsignar.length)} icon={TicketIcon} />
                             <MetricCard
@@ -104,7 +107,6 @@ const DashboardAgentePage = () => {
                             <SystemStatusPanel />
                         </div>
 
-                        {/* Tickets */}
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <div className="lg:col-span-2">
                                 {cargando ? (

@@ -57,9 +57,13 @@ const DetalleTicketPage = () => {
 
             setTicket(ticketData);
             setHistorial(historialData);
-        } catch {
-            toast.error("No se pudo cargar el ticket");
-            navigate(-1);
+        } catch (err) {
+            if (isAxiosError(err) && err.response?.status === 401) {
+                // No mostrar toast: el interceptor maneja la sesión expirada
+            } else {
+                toast.error("No se pudo cargar el ticket");
+                navigate(-1);
+            }
         } finally {
             setCargando(false);
         }
@@ -85,9 +89,15 @@ const DetalleTicketPage = () => {
             setNuevoEstado("");
             await cargarDatos();
         } catch (error) {
-            if (isAxiosError(error) && error.response?.status === 409) {
-                toast.error("Este ticket fue modificado por otro agente. Recargando...");
-                await cargarDatos();
+            if (isAxiosError(error)) {
+                if (error.response?.status === 409) {
+                    toast.error("Este ticket fue modificado por otro agente. Recargando...");
+                    await cargarDatos();
+                } else if (error.response?.status === 401) {
+                    // No mostrar toast: el interceptor maneja la sesión expirada
+                } else {
+                    toast.error("No se pudo cambiar el estado");
+                }
             } else {
                 toast.error("No se pudo cambiar el estado");
             }
@@ -107,8 +117,12 @@ const DetalleTicketPage = () => {
             toast.success("Te asignaste el ticket");
 
             await cargarDatos();
-        } catch {
-            toast.error("No se pudo asignar el ticket");
+        } catch (error) {
+            if (isAxiosError(error) && error.response?.status === 401) {
+                // No mostrar toast: el interceptor maneja la sesión expirada
+            } else {
+                toast.error("No se pudo asignar el ticket");
+            }
         } finally {
             setProcesando(false);
         }
