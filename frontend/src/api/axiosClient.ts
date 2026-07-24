@@ -1,5 +1,6 @@
 import axios from "axios";
 import { obtenerToken, limpiarSesion } from "../utils/storage";
+import { useUIStore } from "../store/uiStore";
 
 const axiosClient = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -21,7 +22,7 @@ axiosClient.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             limpiarSesion();
-            window.location.href = "/login";
+            useUIStore.getState().marcarSesionExpirada();
         }
         return Promise.reject(error);
     }
