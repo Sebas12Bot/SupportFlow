@@ -55,6 +55,7 @@ Detalle ticket
 - Diseño responsive
 - Dark / Light Mode
 - Manejo visual de estados vacíos y errores
+- Swagger/OpenAPI
 
 ## Cómo ejecutarlo
 
@@ -84,6 +85,7 @@ Durante el desarrollo se priorizaron características que suelen encontrarse en 
 - Manejo centralizado de excepciones.
 - Validación de reglas de negocio en el backend.
 - Máquina de estados para controlar el ciclo de vida de los tickets.
+- Swagger/OpenAPI
 
 ## Futuras mejoras
 
@@ -93,4 +95,3 @@ Durante el desarrollo se priorizaron características que suelen encontrarse en 
 - Dashboard con métricas
 - Docker Compose
 - CI/CD
-- Swagger/OpenAPI
